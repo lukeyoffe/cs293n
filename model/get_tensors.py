@@ -28,8 +28,8 @@ speed_test_results = []  # List of floats
 # Iterate through each of the rows of df_train and get the features and targets
 for index, row in tqdm(sample.iterrows(), total=len(sample)):
     speed_test_results.append(row['MeanThroughputMbps'])
-    packet_capture_data.append(calculate_features(pcap_dir=("../data_aggregation/pcaps/" + row['id'] + ".pcap.gz"), 
-                                                  time_delta_s=0.05, 
+    packet_capture_data.append(calculate_features(pcap_dir=("../data_aggregation/pcaps_old/" + row['id'] + ".pcap.gz"), 
+                                                  time_delta_s=0.2, 
                                                   start_time_str=row['StartTime'], 
                                                   client_ip=row['ClientIP'], 
                                                   total_time_s=15))
