@@ -162,3 +162,5 @@ cython_debug/
 
 # the main.csv file
 data_aggregation/main.csv
+
+model/data_tensors_10s_0.01s.pt
