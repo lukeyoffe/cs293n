@@ -164,3 +164,4 @@ cython_debug/
 data_aggregation/main.csv
 
 model/data_tensors_10s_0.01s.pt
+model/data/data_tensors_10s_0.01s.pt
