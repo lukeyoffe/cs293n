@@ -12,39 +12,41 @@ import joblib
 
 from pcap_processor import calculate_features
 
+combos = [[5, 0.01], [1, 0.01], [15, 0.01]]
 
-# get the csv at location ../data_aggregation/processed_df.csv as a df
-df = pd.read_csv('../data_aggregation/processed_df.csv')
+for combo in combos:
 
-# randomly select 400 rows from the df for training and 100 for testing
-sample = df.sample(3000)
+    # get the csv at location ../data_aggregation/processed_df.csv as a df
+    df = pd.read_csv('../data_aggregation/processed_df.csv')
 
-# get the keys of the df_train
-keys = sample.keys()
+    sample = df.sample(3000)
 
-packet_capture_data = []  # List of lists of dicts
-speed_test_results = []  # List of floats
+    # get the keys of the df_train
+    keys = sample.keys()
 
-# Iterate through each of the rows of df_train and get the features and targets
-for index, row in tqdm(sample.iterrows(), total=len(sample)):
-    speed_test_results.append(row['MeanThroughputMbps'])
-    packet_capture_data.append(calculate_features(pcap_dir=("../data_aggregation/pcaps_old/" + row['id'] + ".pcap.gz"), 
-                                                  time_delta_s=0.05, 
-                                                  start_time_str=row['StartTime'], 
-                                                  client_ip=row['ClientIP'], 
-                                                  total_time_s=5))
+    packet_capture_data = []  # List of lists of dicts
+    speed_test_results = []  # List of floats
 
-# Convert data to tensors
-data_tensors = []
-for packet_capture in packet_capture_data:
-    packet_capture_tensor = torch.tensor(
-        [list(packet.values()) for packet in packet_capture], dtype=torch.float32
-    )
-    data_tensors.append(packet_capture_tensor)
-target_tensors = torch.tensor(speed_test_results, dtype=torch.float32)
+    # Iterate through each of the rows of df_train and get the features and targets
+    for index, row in tqdm(sample.iterrows(), total=len(sample)):
+        speed_test_results.append(row['MeanThroughputMbps'])
+        packet_capture_data.append(calculate_features(pcap_dir=("../data_aggregation/pcaps_old/" + row['id'] + ".pcap.gz"), 
+                                                    time_delta_s=combo[1], 
+                                                    start_time_str=row['StartTime'], 
+                                                    client_ip=row['ClientIP'], 
+                                                    total_time_s=combo[0]))
 
-# Save tensors to files
-torch.save(data_tensors, 'data_tensors.pt')
-torch.save(target_tensors, 'target_tensors.pt')
+    # Convert data to tensors
+    data_tensors = []
+    for packet_capture in packet_capture_data:
+        packet_capture_tensor = torch.tensor(
+            [list(packet.values()) for packet in packet_capture], dtype=torch.float32
+        )
+        data_tensors.append(packet_capture_tensor)
+    target_tensors = torch.tensor(speed_test_results, dtype=torch.float32)
 
-print("Tensors saved successfully!")
+    # Save tensors to files
+    torch.save(data_tensors, f'data_tensors_{combo[0]}s_{combo[1]}s.pt')
+    torch.save(target_tensors, f'target_tensors_{combo[0]}s_{combo[1]}s.pt')
+
+    print("Tensors saved successfully!")
