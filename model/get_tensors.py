@@ -29,7 +29,7 @@ speed_test_results = []  # List of floats
 for index, row in tqdm(sample.iterrows(), total=len(sample)):
     speed_test_results.append(row['MeanThroughputMbps'])
     packet_capture_data.append(calculate_features(pcap_dir=("../data_aggregation/pcaps_old/" + row['id'] + ".pcap.gz"), 
-                                                  time_delta_s=0.2, 
+                                                  time_delta_s=0.05, 
                                                   start_time_str=row['StartTime'], 
                                                   client_ip=row['ClientIP'], 
                                                   total_time_s=5))
