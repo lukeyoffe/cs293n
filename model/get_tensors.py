@@ -32,7 +32,7 @@ for index, row in tqdm(sample.iterrows(), total=len(sample)):
                                                   time_delta_s=0.2, 
                                                   start_time_str=row['StartTime'], 
                                                   client_ip=row['ClientIP'], 
-                                                  total_time_s=1))
+                                                  total_time_s=5))
 
 # Convert data to tensors
 data_tensors = []
