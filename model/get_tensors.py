@@ -12,7 +12,7 @@ import joblib
 
 from pcap_processor import calculate_features
 
-combos = [[2.5, 0.05]]
+combos = [[7.5, 0.05], [7.5, 0.01]]
 
 for combo in combos:
 
