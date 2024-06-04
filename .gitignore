@@ -171,3 +171,8 @@ model/data/data_tensors_5s_0.01s.pt
 
 model/data_tensors_7.5s_0.01s.pt
 model/data/data_tensors_7.5s_0.01s.pt
+
+data_aggregation/df_download_info.csv
+data_aggregation/df_15s_plusminus_0_005s.csv
+
+data_aggregation/pcaps/
