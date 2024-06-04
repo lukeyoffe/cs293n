@@ -17,24 +17,45 @@ combos = [[7.5, 0.01]]
 for combo in combos:
 
     # get the csv at location ../data_aggregation/processed_df.csv as a df
-    df = pd.read_csv('../data_aggregation/processed_df.csv')
+    df = pd.read_csv('./processed_df.csv')
 
-    sample = df.sample(3000)
-
-    # get the keys of the df_train
-    keys = sample.keys()
+    num_samples = 22_000
 
     packet_capture_data = []  # List of lists of dicts
     speed_test_results = []  # List of floats
 
     # Iterate through each of the rows of df_train and get the features and targets
-    for index, row in tqdm(sample.iterrows(), total=len(sample)):
-        speed_test_results.append(row['MeanThroughputMbps'])
-        packet_capture_data.append(calculate_features(pcap_dir=("../data_aggregation/pcaps_old/" + row['id'] + ".pcap.gz"), 
-                                                    time_delta_s=combo[1], 
-                                                    start_time_str=row['StartTime'], 
-                                                    client_ip=row['ClientIP'], 
-                                                    total_time_s=combo[0]))
+    # for index, row in tqdm(sample.iterrows(), total=len(sample)):
+    #     speed_test_results.append(row['MeanThroughputMbps'])
+    #     packet_capture_data.append(calculate_features(pcap_dir=("../data_aggregation/pcaps/" + row['id'] + ".pcap.gz"), 
+    #                                                 time_delta_s=combo[1], 
+    #                                                 start_time_str=row['StartTime'], 
+    #                                                 client_ip=row['ClientIP'], 
+    #                                                 total_time_s=combo[0]))
+        
+    with tqdm(total=num_samples) as pbar:
+        i = 0
+        row_index = 0
+        while i < num_samples:
+            # get the row at index row_index as an object
+            row = df.iloc[row_index]
+
+            try:
+                packet_capture_data.append(calculate_features(pcap_dir=("../data_aggregation/pcaps/" + row['id'] + ".pcap.gz"), 
+                                                            time_delta_s=combo[1], 
+                                                            start_time_str=row['StartTime'], 
+                                                            client_ip=row['ClientIP'], 
+                                                            total_time_s=combo[0]))
+                
+                speed_test_results.append(row['MeanThroughputMbps'])
+                row_index += 1
+                i += 1
+                pbar.update(1)
+            except Exception as e:
+                print("Error:", e)
+                row_index += 1
+                print("FAILED:", row['id'], " - ", row['StartTime'], " - ", row['ClientIP'])
+                continue
 
     # Convert data to tensors
     data_tensors = []
