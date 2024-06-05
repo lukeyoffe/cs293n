@@ -176,3 +176,6 @@ data_aggregation/df_download_info.csv
 data_aggregation/df_15s_plusminus_0_005s.csv
 
 data_aggregation/pcaps/
+
+model/data_tensors_7.5s_0.01s_large.pt
+model/target_tensors_7.5s_0.01s_large.pt
